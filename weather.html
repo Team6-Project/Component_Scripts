@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+<head>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.0/jquery.min.js"></script>
+		
+<script type = "text/javascript"> 
+
+$(document).ready( function(){
+ 
+   $("#btn").click(function(){ 
+   
+     var zip = $("#zip").val();
+	 
+     if(zip != ''){
+         
+		 $.ajax({
+             type: 		"GET",
+             url: 		"weather.php",
+             data: 		"zip="+zip,
+             
+		     beforeSend: function(){ 		
+			                  $("#B").html("<b>waiting....</b>");                },
+         
+			 error: 		function(xhr, status, error) {  
+							  alert( "Error Mesaage:  \r\nNumeric code is: "  + xhr.status + " \r\nError is " + error);   },
+			 
+			 success: 	function(result){
+				  
+				if ( result == "" ) {  alert("EOF"); return; }
+				
+				r = JSON.parse(result);
+				
+				
+				
+				res =  "<br><br>" +
+				       "<br>City: "			  + r.name+  " "				  +		/* name property 			*/
+					   "<br>Temperature: " 	  + r.main.temp + "&deg;C "		  +		/* main's temp 				*/
+				       "<br>Weather: " 		  + r.weather[0].main + " "		  +		/* weather's main property 	*/
+					   "<br>Sunrise/epoch: "  + r.sys.sunrise + " "			  +
+
+					   "<br>Time zone/epoch: "  + r.timezone + " "			  +					   
+
+					  "<br><br>";
+				
+				$("#B").html(res); 
+				
+			}	//success  - the bracket } closes the definition of function(result){ ... }
+		});	    //ajax     - the }) closes the  $.ajax({ ...  })  
+     };			//the bracket }  closes the if(zip != '')  {  ....  }
+  });			//anonymous fn handler for button: click(function(){ })
+});				//the  })  closes ready event handler:  ready( function(){ ... })
+      
+</script>
+<style> #C { margin: auto; border-radius: 15px; width: 50%; border: 2px solid blue; padding: 15px; } </style>
+</head>
+
+<body>
+<br><br>
+<div id="C">
+<h1> Weather Report</h1> 
+  
+<input 	id = "zip" type = "text" name = "zip" placeholder="Zipcode" autocomplete="off" min="0" required>
+
+
+<button id = "btn" type = "button"><b>REQUEST WEATHER</b></button><br><br>
+
+<div    id = "B"></div>
+
+</body>
+</html>
